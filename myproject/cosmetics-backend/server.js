@@ -3,81 +3,117 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Middleware
-app.use(cors());
+// Import the database connection
+const connection = require('./db');
 
-// Sample product data
-const products = [
-  {
-    id: 1,
-    name: 'Brand A Blush',
-    price: 20,
-    brand: 'brandA',
-    productType: 'blush',
-    rating: 4.5,
-  },
-  // ... Add more products as needed
-];
+app.use(cors());
+app.use(express.json());
 
 // API Endpoint for products
 app.get('/api/products', (req, res) => {
   const { search, priceRange, brand, productType, rating } = req.query;
 
-  // Initialize filteredProducts with the full products array
-  let filteredProducts = products;
+  let query = 'SELECT * FROM Products WHERE 1=1';
+  const params = [];
 
-  // Filter by search query
+  // Filter by search query (ProductName)
   if (search) {
-    filteredProducts = filteredProducts.filter((product) =>
-      product.name.toLowerCase().includes(search.toLowerCase())
-    );
+    query += ' AND ProductName LIKE ?';
+    params.push(`%${search}%`);
   }
 
   // Filter by price range
   if (priceRange) {
     switch (priceRange) {
       case 'under25':
-        filteredProducts = filteredProducts.filter((product) => product.price < 25);
+        query += ' AND Price < 25';
         break;
       case '25to50':
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price >= 25 && product.price <= 50
-        );
+        query += ' AND Price BETWEEN 25 AND 50';
         break;
       case '50to100':
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price > 50 && product.price <= 100
-        );
+        query += ' AND Price BETWEEN 50 AND 100';
         break;
       case '100andAbove':
-        filteredProducts = filteredProducts.filter((product) => product.price > 100);
+        query += ' AND Price > 100';
         break;
       default:
         break;
     }
   }
 
-  // Filter by brand
+  // Filter by brand (BrandId)
   if (brand) {
-    filteredProducts = filteredProducts.filter((product) => product.brand === brand);
+    // Map frontend brand values to BrandIds
+    const brandMapping = {
+      brandA: 1,
+      brandB: 2,
+      brandC: 3,
+      brandD: 4,
+      brandE: 5,
+      brandF: 6,
+      brandG: 7,
+      brandH: 8,
+      brandI: 9,
+      brandJ: 10
+    };
+    const brandId = brandMapping[brand];
+    if (brandId) {
+      query += ' AND BrandId = ?';
+      params.push(brandId);
+    }
   }
 
-  // Filter by product type
+  // Filter by product type (Category)
   if (productType) {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.productType === productType
-    );
+    // Map frontend productType values to database categories
+    const productTypeMapping = {
+      blush: 'Blush',
+      makeupRemover: 'Makeup Remover',
+      highlighter: 'Highlighter',
+      faceMask: 'Face Mask',
+      foundation: 'Foundation',
+      powder: 'Powder',
+      lipGloss: 'Lip Gloss',
+      ccCream: 'CC Cream',
+      eyeShadow: 'Eye Shadow',
+      concealer: 'Concealer',
+      eyeliner: 'Eyeliner',
+      lipstick: 'Lipstick',
+      settingSpray: 'Setting Spray',
+      cleanser: 'Cleanser',
+      bronzer: 'Bronzer',
+      primer: 'Primer',
+      faceOil: 'Face Oil',
+      contour: 'Contour',
+      mascara: 'Mascara',
+      bbCream: 'BB Cream',
+      lipLiner: 'Lip Liner',
+      moisturizer: 'Moisturizer',
+      exfoliator: 'Exfoliator',
+    };
+    const category = productTypeMapping[productType];
+    if (category) {
+      query += ' AND Category = ?';
+      params.push(category);
+    }
   }
 
   // Filter by rating
   if (rating) {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.rating >= Number(rating)
-    );
+    query += ' AND Rating >= ?';
+    params.push(Number(rating));
   }
 
-  // Send the filtered products as the response
-  res.json(filteredProducts);
+  // Execute the query
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error('Error fetching products:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+    res.json(results);
+  });
 });
 
 // Start the Server

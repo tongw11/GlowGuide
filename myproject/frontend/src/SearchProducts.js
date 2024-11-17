@@ -74,9 +74,16 @@ function SearchProducts() {
           </select>
           <select name="brand" onChange={handleFilterChange}>
             <option value="">Brand</option>
-            <option value="brandA">Brand A</option>
-            <option value="brandB">Brand B</option>
-            <option value="brandC">Brand C</option>
+            <option value="brandA">Drunk Elephant</option>
+            <option value="brandB">Laura Mercier</option>
+            <option value="brandC">Natasha Denona</option>
+            <option value="brandD">Ilia Beauty</option>
+            <option value="brandE">Charlotte Tilbury</option>
+            <option value="brandF">Danessa Myricks</option>
+            <option value="brandG">Bourjois</option>
+            <option value="brandH">IT Cosmetics</option>
+            <option value="brandI">Fenty Beauty</option>
+            <option value="brandJ">Sisley</option>
           </select>
           <select name="productType" onChange={handleFilterChange}>
             <option value="">Product Type</option>
@@ -123,9 +130,20 @@ function SearchProducts() {
           <ul className="product-list">
             {products.length > 0 ? (
               products.map((product) => (
-                <li key={product.id}>
-                  <span className="product-name">{product.name}</span>
-                  <span className="product-price">${product.price}</span>
+                <li key={product.ProductId} className="product-card">
+                  <div className="product-header">
+                    <h4 className="product-name">{product.ProductName}</h4>
+                    <span className="product-price">${product.Price}</span>
+                  </div>
+                  <div className="product-details">
+                    <p><strong>Category:</strong> {product.Category}</p>
+                    <p><strong>Brand ID:</strong> {product.BrandId}</p>
+                    <p><strong>Usage Frequency:</strong> {product.UsageFrequency}</p>
+                    <p><strong>Skin Type:</strong> {product.SkinType}</p>
+                    <p><strong>Number of Reviews:</strong> {product.NumberOfReviews}</p>
+                    <p><strong>Rating:</strong> {product.Rating}</p>
+                    <p><strong>Gender Target:</strong> {product.GenderTarget}</p>
+                  </div>
                 </li>
               ))
             ) : (
