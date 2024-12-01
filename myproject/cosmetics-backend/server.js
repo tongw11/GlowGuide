@@ -6,6 +6,9 @@ const app = express();
 // Import the database connection
 const connection = require('./db');
 
+// Import user routes
+const userRoutes = require('./user');
+
 app.use(cors());
 app.use(express.json());
 
@@ -115,6 +118,9 @@ app.get('/api/products', (req, res) => {
     res.json(results);
   });
 });
+
+// User routes
+app.use('/api/users', userRoutes);
 
 // Start the Server
 const PORT = 5001;
