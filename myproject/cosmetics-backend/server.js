@@ -2,6 +2,12 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const { google } = require('googleapis');
+
+const youtube = google.youtube({
+  version: 'v3',
+  auth: 'AIzaSyBgMQFF6-kbAWcWYGyv6eyoiYIlAXlE9Tg', // Replace with your API key
+});
 
 // Import the database connection
 const connection = require('./db');
@@ -54,27 +60,7 @@ app.get('/api/products', (req, res) => {
     }
   }
 
-  // // Filter by brand (BrandId)
-  // if (brand) {
-  //   // Map frontend brand values to BrandIds
-  //   const brandMapping = {
-  //     brandA: 1,
-  //     brandB: 2,
-  //     brandC: 3,
-  //     brandD: 4,
-  //     brandE: 5,
-  //     brandF: 6,
-  //     brandG: 7,
-  //     brandH: 8,
-  //     brandI: 9,
-  //     brandJ: 10
-  //   };
-  //   const brandId = brandMapping[brand];
-  //   if (brandId) {
-  //     query += ' AND BrandId = ?';
-  //     params.push(brandId);
-  //   }
-  // }
+
 
   // Filter by product type (Category)
   if (productType) {
@@ -139,11 +125,10 @@ app.get('/api/products', (req, res) => {
 // User routes
 app.use('/api/users', userRoutes);
 
+// API Endpoint for product details
 app.get('/api/products/:productId', (req, res) => {
   const { productId } = req.params;
 
-  
-  
   const productQuery = `
     SELECT Products.*, Brands.BrandName 
     FROM Products 
@@ -151,6 +136,7 @@ app.get('/api/products/:productId', (req, res) => {
     WHERE Products.ProductId = ?
   `;
   const videoQuery = 'SELECT VideoLink FROM Video WHERE ProductId = ?';
+  const insertVideoQuery = 'INSERT INTO Video (ProductId, VideoLink) VALUES (?, ?)';
 
   // Fetch product details
   connection.query(productQuery, [productId], (error, productResults) => {
@@ -167,7 +153,7 @@ app.get('/api/products/:productId', (req, res) => {
 
     const product = productResults[0];
 
-    // Fetch video links associated with the product
+    // Check if a video link already exists for this product
     connection.query(videoQuery, [productId], (videoError, videoResults) => {
       if (videoError) {
         console.error('Error fetching video links:', videoError);
@@ -175,18 +161,56 @@ app.get('/api/products/:productId', (req, res) => {
         return;
       }
 
-      // Map the video links
-  
-      const videoLinks = videoResults.map(row => row.VideoLink);
+      if (videoResults.length > 0) {
+        // Video link exists, add it to the product object
+        product.videoLinks = videoResults.map((row) => row.VideoLink);
+        res.json(product);
+      } else {
+        // No video link exists, fetch from YouTube
+        const searchQuery = `${product.BrandName} ${product.ProductName} review`;
 
-      // Add video links to the product object
-      product.videoLinks = videoLinks;
+        youtube.search.list(
+          {
+            part: 'snippet',
+            q: searchQuery,
+            type: 'video',
+            maxResults: 1,
+          },
+          (err, response) => {
+            if (err) {
+              console.error('YouTube API error:', err);
+              res.status(500).json({ error: 'Internal server error' });
+              return;
+            }
 
-      // Send the combined data as a response
-      res.json(product);
+            const items = response.data.items;
+            if (items.length > 0) {
+              const videoId = items[0].id.videoId;
+              const videoLink = `https://www.youtube.com/watch?v=${videoId}`;
+
+              // Save the video link to the database
+              connection.query(insertVideoQuery, [productId, videoLink], (insertError) => {
+                if (insertError) {
+                  console.error('Error inserting video link:', insertError);
+                  res.status(500).json({ error: 'Internal server error' });
+                  return;
+                }
+
+                product.videoLinks = [videoLink];
+                res.json(product);
+              });
+            } else {
+              // No video found, return product without videoLinks
+              product.videoLinks = [];
+              res.json(product);
+            }
+          }
+        );
+      }
     });
   });
 });
+
 
 // Start the Server
 const PORT = 5001;
