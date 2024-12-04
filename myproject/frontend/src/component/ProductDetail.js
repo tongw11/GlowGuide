@@ -90,9 +90,9 @@ function ProductDetail() {
       <p>
         <strong>Category:</strong> {product.Category}
       </p>
-      <p>
-        <strong>Brand ID:</strong> {product.BrandId}
-      </p>
+      
+      <p><strong>Brand:</strong> {product.BrandName}</p>
+      
       <p>
         <strong>Usage Frequency:</strong> {product.UsageFrequency}
       </p>

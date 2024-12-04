@@ -10,7 +10,10 @@ function SearchProducts({ UserId }) {
     brand: '',
     productType: '',
     rating: '',
+    sortBy: '',
+    sortOrder: '',
   });
+  
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,6 +49,8 @@ function SearchProducts({ UserId }) {
       brand: filters.brand,
       productType: filters.productType,
       rating: filters.rating,
+      sortBy: filters.sortBy,
+      sortOrder: filters.sortOrder,
     });
 
     // Fetch products from the backend
@@ -115,17 +120,17 @@ function SearchProducts({ UserId }) {
             <option value="100andAbove">$100 and above</option>
           </select>
           <select name="brand" onChange={handleFilterChange}>
-            <option value="">Brand</option>
-            <option value="brandA">Drunk Elephant</option>
-            <option value="brandB">Laura Mercier</option>
-            <option value="brandC">Natasha Denona</option>
-            <option value="brandD">Ilia Beauty</option>
-            <option value="brandE">Charlotte Tilbury</option>
-            <option value="brandF">Danessa Myricks</option>
-            <option value="brandG">Bourjois</option>
-            <option value="brandH">IT Cosmetics</option>
-            <option value="brandI">Fenty Beauty</option>
-            <option value="brandJ">Sisley</option>
+          <option value="">Brand</option>
+          <option value="Drunk Elephant">Drunk Elephant</option>
+          <option value="Laura Mercier">Laura Mercier</option>
+          <option value="Natasha Denona">Natasha Denona</option>
+          <option value="Ilia Beauty">Ilia Beauty</option>
+          <option value="Charlotte Tilbury">Charlotte Tilbury</option>
+          <option value="Danessa Myricks">Danessa Myricks</option>
+          <option value="Bourjois">Bourjois</option>
+          <option value="IT Cosmetics">IT Cosmetics</option>
+          <option value="Fenty Beauty">Fenty Beauty</option>
+          <option value="Sisley">Sisley</option>
           </select>
           <select name="productType" onChange={handleFilterChange}>
             <option value="">Product Type</option>
@@ -160,6 +165,15 @@ function SearchProducts({ UserId }) {
             <option value="2">⭐⭐ 2 &amp; up</option>
             <option value="1">⭐ 1 &amp; up</option>
           </select>
+          <select name="sortBy" onChange={handleFilterChange}>
+            <option value="">Sort By</option>
+            <option value="Price">Price</option>
+            <option value="Rating">Rating</option>
+          </select>
+          <select name="sortOrder" onChange={handleFilterChange}>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
         </div>
         <button type="submit">Search</button>
       </form>
@@ -179,7 +193,7 @@ function SearchProducts({ UserId }) {
                   </div>
                   <div className="product-details">
                     <p><strong>Category:</strong> {product.Category}</p>
-                    <p><strong>Brand ID:</strong> {product.BrandId}</p>
+                    <p><strong>Brand:</strong> {product.BrandName}</p>
                     <p><strong>Usage Frequency:</strong> {product.UsageFrequency}</p>
                     <p><strong>Skin Type:</strong> {product.SkinType}</p>
                     <p><strong>Number of Reviews:</strong> {product.NumberOfReviews}</p>

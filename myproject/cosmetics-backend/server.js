@@ -14,17 +14,26 @@ app.use(express.json());
 
 // API Endpoint for products
 app.get('/api/products', (req, res) => {
-  const { search, priceRange, brand, productType, rating } = req.query;
+  const { search, priceRange, brand, productType, rating, sortBy, sortOrder } = req.query;
 
-  let query = 'SELECT * FROM Products WHERE 1=1';
+
+  let query = `
+    SELECT Products.*, Brands.BrandName 
+    FROM Products 
+    JOIN Brands ON Products.BrandId = Brands.BrandId 
+    WHERE 1=1
+  `;
   const params = [];
 
   // Filter by search query (ProductName)
   if (search) {
-    query += ' AND ProductName LIKE ?';
+    query += ' AND Products.ProductName LIKE ?';
     params.push(`%${search}%`);
   }
-
+  if (brand) {
+    query += ' AND Brands.BrandName = ?';
+    params.push(brand);
+  }
   // Filter by price range
   if (priceRange) {
     switch (priceRange) {
@@ -45,27 +54,27 @@ app.get('/api/products', (req, res) => {
     }
   }
 
-  // Filter by brand (BrandId)
-  if (brand) {
-    // Map frontend brand values to BrandIds
-    const brandMapping = {
-      brandA: 1,
-      brandB: 2,
-      brandC: 3,
-      brandD: 4,
-      brandE: 5,
-      brandF: 6,
-      brandG: 7,
-      brandH: 8,
-      brandI: 9,
-      brandJ: 10
-    };
-    const brandId = brandMapping[brand];
-    if (brandId) {
-      query += ' AND BrandId = ?';
-      params.push(brandId);
-    }
-  }
+  // // Filter by brand (BrandId)
+  // if (brand) {
+  //   // Map frontend brand values to BrandIds
+  //   const brandMapping = {
+  //     brandA: 1,
+  //     brandB: 2,
+  //     brandC: 3,
+  //     brandD: 4,
+  //     brandE: 5,
+  //     brandF: 6,
+  //     brandG: 7,
+  //     brandH: 8,
+  //     brandI: 9,
+  //     brandJ: 10
+  //   };
+  //   const brandId = brandMapping[brand];
+  //   if (brandId) {
+  //     query += ' AND BrandId = ?';
+  //     params.push(brandId);
+  //   }
+  // }
 
   // Filter by product type (Category)
   if (productType) {
@@ -108,6 +117,14 @@ app.get('/api/products', (req, res) => {
     params.push(Number(rating));
   }
 
+  // Add sorting
+  if (sortBy) {
+    const validSortFields = ['Price', 'Rating'];
+    if (validSortFields.includes(sortBy)) {
+      const order = sortOrder === 'desc' ? 'DESC' : 'ASC';
+      query += ` ORDER BY ${sortBy} ${order}`;
+    }
+  }
   // Execute the query
   connection.query(query, params, (error, results) => {
     if (error) {
@@ -125,7 +142,14 @@ app.use('/api/users', userRoutes);
 app.get('/api/products/:productId', (req, res) => {
   const { productId } = req.params;
 
-  const productQuery = 'SELECT * FROM Products WHERE ProductId = ?';
+  
+  
+  const productQuery = `
+    SELECT Products.*, Brands.BrandName 
+    FROM Products 
+    JOIN Brands ON Products.BrandId = Brands.BrandId 
+    WHERE Products.ProductId = ?
+  `;
   const videoQuery = 'SELECT VideoLink FROM Video WHERE ProductId = ?';
 
   // Fetch product details
