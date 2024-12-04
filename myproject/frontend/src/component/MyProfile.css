@@ -45,3 +45,40 @@
 .wishlist-item p strong {
     color: #333;
 }
+
+/* Container for all bundles */
+.bundles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  /* Each bundle card */
+  .bundle-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    width: calc(33.333% - 16px); /* Three cards per row */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  
+  .bundle-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Bundle Name */
+  .bundle-name {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  /* Product List */
+  .bundle-card p {
+    font-size: 14px;
+    color: #666;
+  }
+  

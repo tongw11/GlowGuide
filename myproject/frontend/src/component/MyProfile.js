@@ -3,6 +3,7 @@ import './MyProfile.css';
 
 function MyProfile() {
     const [wishlist, setWishlist] = useState([]);
+    const [bundles, setBundles] = useState([]);
     const UserId = localStorage.getItem('UserId'); // Get UserId from localStorage
 
     useEffect(() => {
@@ -14,6 +15,16 @@ function MyProfile() {
                 })
                 .catch((error) => {
                     console.error('Error fetching wishlist:', error);
+                });
+
+            // Fetch Bundles
+            fetch(`http://localhost:5001/api/users/${UserId}/bundles`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setBundles(data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching bundles:', error);
                 });
         }
     }, [UserId]);
@@ -38,6 +49,20 @@ function MyProfile() {
             ) : (
                 <p>Your wishlist is empty.</p>
             )}
+
+        <h2>Your Bundles</h2>
+        <div className="bundles-container">
+        {bundles.length > 0 ? (
+            bundles.map((bundle) => (
+            <div key={bundle.BundledId} className="bundle-card">
+                <h3 className="bundle-name">{bundle.BundleName}</h3>
+                <p><strong>Products:</strong> {bundle.Products || "No products in this bundle yet"}</p>
+            </div>
+            ))
+        ) : (
+        <p>You have not created any bundles yet.</p>
+        )}
+        </div>
         </div>
     );
 }
