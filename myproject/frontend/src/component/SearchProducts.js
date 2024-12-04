@@ -1,5 +1,6 @@
 // src/SearchProducts.js
 import './SearchProducts.css';
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 
 function SearchProducts({ UserId }) {
@@ -191,6 +192,9 @@ function SearchProducts({ UserId }) {
                   >
                     Add to Wishlist
                   </button>
+                  <Link to={`/product/${product.ProductId}`} className="detail-button">
+                    View Details
+                  </Link>
                 </li>
               ))
             ) : (

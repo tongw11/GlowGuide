@@ -1,3 +1,4 @@
+//user.js
 const express = require('express');
 const bcrypt = require('bcrypt'); // For password hashing
 const connection = require('./db'); // Import the database connection

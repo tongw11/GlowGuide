@@ -122,6 +122,48 @@ app.get('/api/products', (req, res) => {
 // User routes
 app.use('/api/users', userRoutes);
 
+app.get('/api/products/:productId', (req, res) => {
+  const { productId } = req.params;
+
+  const productQuery = 'SELECT * FROM Products WHERE ProductId = ?';
+  const videoQuery = 'SELECT VideoLink FROM Video WHERE ProductId = ?';
+
+  // Fetch product details
+  connection.query(productQuery, [productId], (error, productResults) => {
+    if (error) {
+      console.error('Error fetching product details:', error);
+      res.status(500).json({ error: 'Internal server error' });
+      return;
+    }
+
+    if (productResults.length === 0) {
+      res.status(404).json({ error: 'Product not found' });
+      return;
+    }
+
+    const product = productResults[0];
+
+    // Fetch video links associated with the product
+    connection.query(videoQuery, [productId], (videoError, videoResults) => {
+      if (videoError) {
+        console.error('Error fetching video links:', videoError);
+        res.status(500).json({ error: 'Internal server error' });
+        return;
+      }
+
+      // Map the video links
+  
+      const videoLinks = videoResults.map(row => row.VideoLink);
+
+      // Add video links to the product object
+      product.videoLinks = videoLinks;
+
+      // Send the combined data as a response
+      res.json(product);
+    });
+  });
+});
+
 // Start the Server
 const PORT = 5001;
 app.listen(PORT, () => {

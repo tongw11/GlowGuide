@@ -1,9 +1,11 @@
+//app.js is the main file that renders the application. It contains the header and routes for the application.
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import SearchProducts from './component/SearchProducts';
 import MyProfile from './component/MyProfile';
 import SignIn from './component/SignIn';
 import Register from './component/Register';
+import ProductDetail from './component/ProductDetail';
 import './App.css';
 
 function App() {
@@ -28,6 +30,7 @@ function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<SearchProducts userId="mock-user-id" />} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
         </Routes>
       </div>
     </Router>
