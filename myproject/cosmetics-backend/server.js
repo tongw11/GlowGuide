@@ -6,7 +6,7 @@ const { google } = require('googleapis');
 
 const youtube = google.youtube({
   version: 'v3',
-  auth: 'AIzaSyBgMQFF6-kbAWcWYGyv6eyoiYIlAXlE9Tg', // Replace with your API key
+  auth: '', 
 });
 
 // Import the database connection
