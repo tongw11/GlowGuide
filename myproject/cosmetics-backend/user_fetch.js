@@ -3,7 +3,7 @@ const router = express.Router();
 const connection = require('./db');
 
 // Endpoint to fetch all bundles created by a specific user
-router.get('/users/:userId/bundles', (req, res) => {
+router.get('/:userId/bundles', (req, res) => {
   const { userId } = req.params;
 
   // Query to get all bundles for the user, including product names in each bundle

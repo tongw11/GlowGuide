@@ -172,7 +172,7 @@ function SearchProducts({ UserId }) {
         return;
       }
 
-      fetch(`http://localhost:5001/api/users/${storedUserId}/bundles`)
+      fetch(`http://localhost:5001/api/fetch/${storedUserId}/bundles`)
       .then((response) => response.json())
       .then((data) => {
         console.log("Fetched Bundles:", data); // Debugging

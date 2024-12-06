@@ -5,6 +5,7 @@ function MyProfile() {
     const [wishlist, setWishlist] = useState([]);
     const [bundles, setBundles] = useState([]);
     const UserId = localStorage.getItem('UserId'); // Get UserId from localStorage
+    const [recommendedProducts, setRecommendedProducts] = useState([]);
 
     useEffect(() => {
         if (UserId) {
@@ -18,13 +19,23 @@ function MyProfile() {
                 });
 
             // Fetch Bundles
-            fetch(`http://localhost:5001/api/users/${UserId}/bundles`)
+            fetch(`http://localhost:5001/api/fetch/${UserId}/bundles`)
                 .then((response) => response.json())
                 .then((data) => {
                     setBundles(data);
                 })
                 .catch((error) => {
                     console.error('Error fetching bundles:', error);
+                });
+            
+            //Fetch Recommend Prodcuts
+            fetch(`http://localhost:5001/api/recommend/${UserId}/recommendations`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setRecommendedProducts(data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching recommended products:', error);
                 });
         }
     }, [UserId]);
@@ -63,6 +74,21 @@ function MyProfile() {
         <p>You have not created any bundles yet.</p>
         )}
         </div>
+
+        <div className="recommendation-container">
+        <h2>Recommended Products</h2>
+        <div className="recommendation-list">
+        {recommendedProducts.map((product) => (
+            <div key={product.ProductId} className="recommendation-card">
+                <h3>{product.ProductName}</h3>
+                    <p><strong>Price:</strong> ${product.Price}</p>
+                    <p><strong>Category:</strong> {product.Category}</p>
+                    <p><strong>Brand:</strong> {product.BrandName}</p>
+            </div>
+        ))}
+        </div>
+        </div>
+
         </div>
     );
 }

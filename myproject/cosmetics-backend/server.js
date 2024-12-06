@@ -10,6 +10,7 @@ const connection = require('./db');
 const userRoutes = require('./user');
 const bundleRoutes = require('./bundle_back');
 const bundleFetchRoutes = require('./user_fetch'); 
+const recommendation = require('./recommendation');
 
 app.use(cors());
 app.use(express.json());
@@ -124,7 +125,8 @@ app.get('/api/products', (req, res) => {
 // User routes
 app.use('/api/users', userRoutes);
 app.use('/api/bundles', bundleRoutes);
-app.use('/api', bundleFetchRoutes);
+app.use('/api/fetch', bundleFetchRoutes);
+app.use('/api/recommend', recommendation);
 
 // Start the Server
 const PORT = 5001;
