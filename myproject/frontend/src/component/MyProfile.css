@@ -1,0 +1,47 @@
+.profile-container {
+    margin-top: 50px;
+    margin-left: 20px;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    text-align: left;
+}
+
+.profile-greeting {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.profile-subtext {
+    font-size: 1.5rem;
+    color: #555;
+    margin-top: 10px;
+}
+
+.wishlist {
+    list-style: none;
+    padding: 0;
+}
+
+.wishlist-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wishlist-item h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.wishlist-item p {
+    margin: 5px 0;
+    color: #555;
+}
+
+.wishlist-item p strong {
+    color: #333;
+}

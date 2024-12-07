@@ -1,0 +1,20 @@
+/* src/component/ProductDetail.css */
+
+.product-detail-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  .product-detail-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .product-detail-container p {
+    margin-bottom: 10px;
+  }
+  
+
+  
+
+  

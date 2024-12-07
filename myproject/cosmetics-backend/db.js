@@ -21,25 +21,21 @@ connection.connect((err) => {
 
 // Test query
 connection.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MySQL:', err.stack);
+  if (err) {
+    console.error('Error connecting to MySQL:', err.stack);
+    return;
+  }
+  console.log('Connected to MySQL as id ' + connection.threadId);
+
+  // Test query
+  connection.query('SELECT 1 + 1 AS solution', (error, results) => {
+    if (error) {
+      console.error('Error executing test query:', error);
       return;
     }
-    console.log('Connected to MySQL as id ' + connection.threadId);
-  
-    // Test query
-    connection.query('SELECT 1 + 1 AS solution', (error, results) => {
-      if (error) {
-        console.error('Error executing test query:', error);
-        return;
-      }
-      console.log('Test query result:', results[0].solution);
-    });
+    console.log('Test query result:', results[0].solution);
   });
-  
-
-
-
+});
 
 module.exports = connection;
 
