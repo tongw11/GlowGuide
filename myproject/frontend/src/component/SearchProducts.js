@@ -16,6 +16,10 @@ function SearchProducts({ UserId }) {
   const [products, setProducts] = useState([]);
   const [summary, setSummary] = useState({}); // To store summary info like total count
   const [isLoading, setIsLoading] = useState(false);
+  const [bundles, setBundles] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [showBundles, setShowBundles] = useState(false);
+
 
   // Handle search input change
   const handleInputChange = (e) => {
@@ -88,6 +92,97 @@ function SearchProducts({ UserId }) {
         console.error('Error adding to wishlist:', error);
         alert('An error occurred while adding the item to the wishlist.');
       });
+  };
+  // Handle adding a product to an existing bundle
+  const handleAddToBundle = (bundleId) => {
+    console.log("Adding product to bundle:", { bundleId, ProductId: selectedProductId });
+    const storedUserId = localStorage.getItem("UserId");
+    if (!storedUserId) {
+      alert("User not logged in!");
+      return;
+    }
+
+    fetch(`http://localhost:5001/api/bundles/${bundleId}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ProductId: selectedProductId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          alert("Product added to bundle!");
+          setShowBundles(false);
+        } else {
+          alert("Failed to add product to bundle.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error adding product to bundle:", error);
+        alert("Failed to add product to bundle.");
+      });
+  };
+
+  // Handle creating a new bundle with the selected product
+  const handleCreateBundle = (ProductId) => {
+    const storedUserId = localStorage.getItem("UserId");
+    if (!storedUserId) {
+      alert("User not logged in!");
+      return;
+    }
+
+    const bundleName = prompt("Enter a name for the new bundle:");
+    if (!bundleName) return;
+
+    fetch("http://localhost:5001/api/bundles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        UserId: storedUserId,
+        BundleName: bundleName,
+        ProductId: ProductId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message) {
+          alert("New bundle created!");
+          setShowBundles(false);
+        } else {
+          alert("Failed to create new bundle.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error creating bundle:", error);
+        alert("Failed to create new bundle.");
+      });
+  };
+
+  // Handle "Add to Existing Bundle" button click
+  const handleShowBundles = (ProductId) => {
+    setSelectedProductId(ProductId);
+    const storedUserId = localStorage.getItem("UserId");
+    console.log("User ID: ", storedUserId);
+
+    if (!storedUserId) {
+      alert("User not logged in!");
+      return;
+    }
+
+    fetch(`http://localhost:5001/api/fetch/${storedUserId}/bundles`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched Bundles:", data); // Debugging
+      setBundles(data); // Store the fetched bundles
+      setShowBundles(true); // Show the bundles panel
+    })
+    .catch((error) => {
+      console.error("Error fetching bundles:", error);
+      alert("Failed to fetch bundles.");
+    });
   };
 
   return (
@@ -204,6 +299,18 @@ function SearchProducts({ UserId }) {
                   >
                     Add to Wishlist
                   </button>
+                  <button
+                    onClick={() => handleShowBundles(product.ProductId)}
+                    className="bundle-button"
+                  >
+                    Add to Existing Bundle
+                  </button>
+                  <button
+                    onClick={() => handleCreateBundle(product.ProductId)}
+                    className="bundle-button"
+                  >
+                    Create New Bundle
+                  </button>
                   <Link to={`/product/${product.ProductId}`} className="detail-button">
                     View Details
                   </Link>
@@ -215,8 +322,38 @@ function SearchProducts({ UserId }) {
           </ul>
         </div>
       )}
+    {showBundles && (
+    <div className="bundles-panel">
+      <h3>Your Bundles</h3>
+      <ul>
+        {bundles.length > 0 ? (
+          bundles.map((bundle) => (
+            <li key={bundle.BundledId} className="bundle-item">
+              <span>{bundle.BundleName}</span>
+              <button
+                onClick={() => handleAddToBundle(bundle.BundledId)}
+                className="add-to-bundle-button"
+              >
+                Add to Bundle
+              </button>
+            </li>
+          ))
+        ) : (
+          <p>No bundles available.</p>
+        )}
+      </ul>
+      <button
+        onClick={() => setShowBundles(false)}
+        className="close-panel-button"
+      >
+        Close
+      </button>
+    </div>
+    )}
     </div>
   );
 }
 
+
 export default SearchProducts;
+
