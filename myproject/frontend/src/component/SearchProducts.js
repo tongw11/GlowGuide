@@ -1,7 +1,6 @@
-// src/SearchProducts.js
 import './SearchProducts.css';
 import { Link } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function SearchProducts({ UserId }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,14 +14,8 @@ function SearchProducts({ UserId }) {
   });
   
   const [products, setProducts] = useState([]);
+  const [summary, setSummary] = useState({}); // To store summary info like total count
   const [isLoading, setIsLoading] = useState(false);
-
-  // useEffect(() => {
-  //   // Save UserId to localStorage if provided
-  //   if (UserId) {
-  //     localStorage.setItem('UserId', UserId);
-  //   }
-  // }, [UserId]);
 
   // Handle search input change
   const handleInputChange = (e) => {
@@ -57,7 +50,8 @@ function SearchProducts({ UserId }) {
     fetch(`http://localhost:5001/api/products?${params.toString()}`)
       .then((response) => response.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(data.products || []);
+        setSummary(data.summary || {}); // Store summary (e.g., total_products)
         setIsLoading(false);
       })
       .catch((error) => {
@@ -120,17 +114,17 @@ function SearchProducts({ UserId }) {
             <option value="100andAbove">$100 and above</option>
           </select>
           <select name="brand" onChange={handleFilterChange}>
-          <option value="">Brand</option>
-          <option value="Drunk Elephant">Drunk Elephant</option>
-          <option value="Laura Mercier">Laura Mercier</option>
-          <option value="Natasha Denona">Natasha Denona</option>
-          <option value="Ilia Beauty">Ilia Beauty</option>
-          <option value="Charlotte Tilbury">Charlotte Tilbury</option>
-          <option value="Danessa Myricks">Danessa Myricks</option>
-          <option value="Bourjois">Bourjois</option>
-          <option value="IT Cosmetics">IT Cosmetics</option>
-          <option value="Fenty Beauty">Fenty Beauty</option>
-          <option value="Sisley">Sisley</option>
+            <option value="">Brand</option>
+            <option value="Drunk Elephant">Drunk Elephant</option>
+            <option value="Laura Mercier">Laura Mercier</option>
+            <option value="Natasha Denona">Natasha Denona</option>
+            <option value="Ilia Beauty">Ilia Beauty</option>
+            <option value="Charlotte Tilbury">Charlotte Tilbury</option>
+            <option value="Danessa Myricks">Danessa Myricks</option>
+            <option value="Bourjois">Bourjois</option>
+            <option value="IT Cosmetics">IT Cosmetics</option>
+            <option value="Fenty Beauty">Fenty Beauty</option>
+            <option value="Sisley">Sisley</option>
           </select>
           <select name="productType" onChange={handleFilterChange}>
             <option value="">Product Type</option>
@@ -183,6 +177,10 @@ function SearchProducts({ UserId }) {
       ) : (
         <div className="results-container">
           <h3>Results</h3>
+          {/* Display the product count if available */}
+          {summary.total_products !== undefined && (
+            <p>Total Products Found: {summary.total_products}</p>
+          )}
           <ul className="product-list">
             {products.length > 0 ? (
               products.map((product) => (
