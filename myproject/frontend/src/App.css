@@ -37,3 +37,31 @@
     transform: rotate(360deg);
   }
 }
+
+.sign-out-button {
+  padding: 2px 8px;
+  /* Reduce padding to make the button smaller */
+  height: 24px;
+  /* Set a fixed height for the button */
+  width: auto;
+  /* Let the width adjust based on the text */
+  font-size: 14px;
+  /* Keep font size reasonable for readability */
+  background-color: #f4d136;
+  /* Red background for Sign Out */
+  color: white;
+  /* White text for visibility */
+  border: none;
+  /* Remove default border */
+  border-radius: 4px;
+  /* Slightly rounded corners */
+  cursor: pointer;
+  /* Pointer cursor on hover */
+  transition: background-color 0.3s;
+  /* Smooth hover effect */
+}
+
+.sign-out-button:hover {
+  background-color: #e7a82b;
+  /* Darker red on hover */
+}

@@ -1,4 +1,3 @@
-/* SearchProducts.css */
 .search-container {
     display: flex;
     flex-direction: column;
@@ -144,6 +143,7 @@
     color: #333;
 }
 
+
 /* Header Styles */
 .header-container {
     display: flex;
@@ -257,26 +257,216 @@ button:active {
     margin: 10px 0 0;
 }
 
-.add-to-wishlist {
-    background-color: #FFD700;
-    /* Yellow background */
+/* Button styling */
+button {
+    background-color: #f7d47b;
     color: #333;
-    /* Dark text for contrast */
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #FFC107;
+}
+
+button:active {
+    background-color: #FFA000;
+}
+
+/* Product Results */
+.results-container {
+    margin-top: 40px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.results-container h3 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.product-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.product-list li {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.product-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.product-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.product-price {
+    font-size: 1.25rem;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.product-details {
+    font-size: 1rem;
+    color: #555;
+}
+
+.product-details p {
+    margin: 8px 0;
+}
+
+.product-details strong {
+    color: #333;
+}
+
+/* Wishlist Button */
+.wishlist-button {
+    background-color: #f7e06e;
+    /* Light Yellow */
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+.wishlist-button:hover {
+    background-color: #f4d04b;
+}
+
+/* Bundle Buttons */
+.bundle-button {
+    background-color: #a8e6cf;
+    /* Light Green */
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
     margin-top: 10px;
 }
 
-.add-to-wishlist:hover {
-    background-color: #FFC107;
-    /* Slightly darker yellow */
+.bundle-button:hover {
+    background-color: #83c6a5;
 }
 
-.add-to-wishlist:active {
-    background-color: #FFA000;
-    /* Darker yellow on click */
+/* View Details Button */
+.detail-button {
+    display: inline-block;
+    margin-top: 10px;
+    text-align: center;
+    padding: 10px 20px;
+    background-color: #b3d9ff;
+    /* Light Blue */
+    color: #333;
+    font-weight: bold;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.detail-button:hover {
+    background-color: #80c1e3;
+}
+
+/* Bundles Panel */
+.bundles-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.bundles-panel .panel-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bundles-panel h3 {
+    font-size: 1.75rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.bundles-panel ul {
+    list-style: none;
+    padding: 0;
+}
+
+.bundles-panel li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.bundles-panel .add-to-bundle-button {
+    background-color: #a8e6cf;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.bundles-panel .add-to-bundle-button:hover {
+    background-color: #83c6a5;
+}
+
+.bundles-panel .close-panel-button {
+    background-color: #f7d47b;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.bundles-panel .close-panel-button:hover {
+    background-color: #f4cb65;
+}
+
+/* Loader */
+.loading-spinner {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f7d47b;
 }

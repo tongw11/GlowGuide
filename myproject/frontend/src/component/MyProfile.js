@@ -4,15 +4,19 @@ import './MyProfile.css';
 function MyProfile() {
     const [wishlist, setWishlist] = useState([]);
     const [bundles, setBundles] = useState([]);
-    const UserId = localStorage.getItem('UserId'); // Get UserId from localStorage
     const [recommendedProducts, setRecommendedProducts] = useState([]);
-    const [comments, setComments] = useState([]);
-    const [editingComment, setEditingComment] = useState(null); // Track which comment is being edited
+    const [comments, setComments] = useState([]); // Initialize comments state
+
+    const [editingComment, setEditingComment] = useState(null);
     const [editContent, setEditContent] = useState('');
     const [editRating, setEditRating] = useState(0);
 
+    const UserId = localStorage.getItem('UserId');
+
     useEffect(() => {
+
         if (UserId) {
+            // Fetch wishlist
             fetch(`http://localhost:5001/api/users/wishlist/${UserId}`)
                 .then((response) => response.json())
                 .then((data) => {
@@ -22,7 +26,17 @@ function MyProfile() {
                     console.error('Error fetching wishlist:', error);
                 });
 
-            // Fetch Bundles
+            // Fetch comments
+            fetch(`http://localhost:5001/api/users/comments/${UserId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setComments(data);
+                })
+                .catch((error) => {
+                    console.error('Error fetching comments:', error);
+                });
+
+            // Fetch bundles
             fetch(`http://localhost:5001/api/fetch/${UserId}/bundles`)
                 .then((response) => response.json())
                 .then((data) => {
@@ -32,7 +46,7 @@ function MyProfile() {
                     console.error('Error fetching bundles:', error);
                 });
 
-            //Fetch Recommend Prodcuts
+            // Fetch recommended products
             fetch(`http://localhost:5001/api/recommend/${UserId}/recommendations`)
                 .then((response) => response.json())
                 .then((data) => {
@@ -40,15 +54,6 @@ function MyProfile() {
                 })
                 .catch((error) => {
                     console.error('Error fetching recommended products:', error);
-                });
-
-            fetch(`http://localhost:5001/api/users/comments/${UserId}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setComments(data);
-                })
-                .catch((error) => {
-                    console.error('Error fetching comments:', error);
                 });
         }
     }, [UserId]);
@@ -75,7 +80,6 @@ function MyProfile() {
         })
             .then((response) => {
                 if (response.ok) {
-                    // Remove the deleted item from the wishlist
                     setWishlist(wishlist.filter((item) => item.RecordId !== recordId));
                 } else {
                     console.error('Failed to delete wishlist item');
@@ -120,11 +124,14 @@ function MyProfile() {
             });
     };
 
+    const username = localStorage.getItem('username');
 
     return (
         <div className="profile-container">
-            <h1 className="profile-greeting">Hi, {localStorage.getItem('username')}!</h1>
-            <p className="profile-subtext">Welcome to your profile!</p>
+            {username && <h1 className="profile-greeting">Hi, {username}!</h1>}
+            {username && <p className="profile-subtext">Welcome to your profile!</p>}
+            {/* <h1 className="profile-greeting">Hi, {localStorage.getItem('username')}!</h1>
+            <p className="profile-subtext">Welcome to your profile!</p> */}
 
             <h2>Your Wishlist</h2>
             {wishlist.length > 0 ? (
@@ -147,35 +154,6 @@ function MyProfile() {
             ) : (
                 <p>Your wishlist is empty.</p>
             )}
-
-            <h2>Your Bundles</h2>
-            <div className="bundles-container">
-                {bundles.length > 0 ? (
-                    bundles.map((bundle) => (
-                        <div key={bundle.BundledId} className="bundle-card">
-                            <h3 className="bundle-name">{bundle.BundleName}</h3>
-                            <p><strong>Products:</strong> {bundle.Products || "No products in this bundle yet"}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>You have not created any bundles yet.</p>
-                )}
-            </div>
-
-            <div className="recommendation-container">
-                <h2>Recommended Products</h2>
-                <div className="recommendation-list">
-                    {recommendedProducts.map((product) => (
-                        <div key={product.ProductId} className="recommendation-card">
-                            <h3>{product.ProductName}</h3>
-                            <p><strong>Price:</strong> ${product.Price}</p>
-                            <p><strong>Category:</strong> {product.Category}</p>
-                            <p><strong>Brand:</strong> {product.BrandName}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
 
             <h2>Your Comments</h2>
             {comments.length > 0 ? (
@@ -234,6 +212,34 @@ function MyProfile() {
             ) : (
                 <p>You haven't commented on any products yet.</p>
             )}
+
+            <h2>Your Bundles</h2>
+            <div className="bundles-container">
+                {bundles.length > 0 ? (
+                    bundles.map((bundle) => (
+                        <div key={bundle.BundledId} className="bundle-card">
+                            <h3 className="bundle-name">{bundle.BundleName}</h3>
+                            <p><strong>Products:</strong> {bundle.Products || "No products in this bundle yet"}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>You have not created any bundles yet.</p>
+                )}
+            </div>
+
+            <div className="recommendation-container">
+                <h2>Recommended Products</h2>
+                <div className="recommendation-list">
+                    {recommendedProducts.map((product) => (
+                        <div key={product.ProductId} className="recommendation-card">
+                            <h3>{product.ProductName}</h3>
+                            <p><strong>Price:</strong> ${product.Price}</p>
+                            <p><strong>Category:</strong> {product.Category}</p>
+                            <p><strong>Brand:</strong> {product.BrandName}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

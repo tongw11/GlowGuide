@@ -50,29 +50,6 @@ function ProductDetail() {
       });
   };
 
-  const handleDeleteComment = (commentId) => {
-    // Call API to delete the comment
-    fetch(`http://localhost:5001/api/product/${productId}/comments/${commentId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        alert(data.message || 'Comment deleted successfully!');
-        // Reload the product details after deleting the comment
-        setIsLoading(true);
-        fetch(`http://localhost:5001/api/products/${productId}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setProduct(data);
-            setIsLoading(false);
-          });
-      })
-      .catch((error) => {
-        console.error('Error deleting comment:', error);
-        alert('An error occurred while deleting the comment.');
-      });
-  };
-
   if (isLoading) {
     return <p>Loading product details...</p>;
   }
@@ -259,9 +236,6 @@ function ProductDetail() {
               <p><strong>Comment:</strong> {comment.CommentContent}</p>
               <p><strong>By User:</strong> {comment.UserName}</p>
               <p><strong>Date:</strong> {new Date(comment.Date).toLocaleString()}</p>
-              <button onClick={() => handleDeleteComment(comment.commentId)} className="delete-comment-button">
-                Delete Comment
-              </button>
             </div>
           ))}
         </div>
