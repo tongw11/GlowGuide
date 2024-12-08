@@ -46,104 +46,98 @@
     color: #333;
 }
 
-/* Container for all bundles */
-.bundles-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 16px;
-  }
-  
-  /* Each bundle card */
-  .bundle-card {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
+/* Comments styles */
+.comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.comment-item {
+    background-color: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
     border-radius: 8px;
-    padding: 16px;
-    width: calc(33.333% - 16px); /* Three cards per row */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-  }
-  
-  .bundle-card:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comment-item:hover {
     transform: translateY(-5px);
-  }
-  
-  /* Bundle Name */
-  .bundle-name {
-    font-size: 18px;
-    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.comment-item h3 {
+    font-size: 1.2rem;
+    color: #555;
     margin-bottom: 8px;
-  }
-  
-  /* Product List */
-  .bundle-card p {
-    font-size: 14px;
-    color: #666;
-  }
-
-  /* Container for the recommendation cards */
-.recommendation-container {
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 800px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Header for recommendations */
-.recommendation-container h2 {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
+.comment-item p {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 5px 0;
 }
 
-/* Flexbox layout for recommendation cards */
-.recommendation-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: space-around;
+.comment-item small {
+    font-size: 0.8rem;
+    color: #aaa;
 }
 
-/* Individual recommendation card */
-.recommendation-card {
-  flex: 0 1 calc(45% - 10px);
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+/* Edit Comment Form */
+.edit-comment-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
-/* Card hover effect */
-.recommendation-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+.edit-comment-form textarea,
+.edit-comment-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }
 
-/* Product title */
-.recommendation-card h3 {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
+.edit-comment-form button {
+    background-color: #009688;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-right: 10px;
 }
 
-/* Product details */
-.recommendation-card p {
-  margin: 4px 0;
-  font-size: 16px;
-  color: #555;
+.edit-comment-form button:hover {
+    background-color: #00796B;
 }
 
-/* Bold labels */
-.recommendation-card strong {
-  font-weight: bold;
-  color: #000;
+/* Buttons */
+.edit-button,
+.delete-button {
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-right: 10px;
 }
 
-  
+.delete-button {
+    background-color: #d32f2f;
+}
+
+.edit-button:hover {
+    background-color: #1558b0;
+}
+
+.delete-button:hover {
+    background-color: #b71c1c;
+}

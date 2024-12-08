@@ -1,6 +1,6 @@
 import './SearchProducts.css';
 import { Link } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function SearchProducts({ UserId }) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,14 +12,35 @@ function SearchProducts({ UserId }) {
     sortBy: '',
     sortOrder: '',
   });
-  
+
   const [products, setProducts] = useState([]);
   const [summary, setSummary] = useState({}); // To store summary info like total count
   const [isLoading, setIsLoading] = useState(false);
   const [bundles, setBundles] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [showBundles, setShowBundles] = useState(false);
+  const [wishlist, setWishlist] = useState(new Set()); // Track products in wishlist
 
+  // useEffect to load wishlist from localStorage or API if UserId is available
+  useEffect(() => {
+    if (UserId) {
+      fetchWishlist(UserId);
+    }
+  }, [UserId]);
+
+  const fetchWishlist = (UserId) => {
+    fetch(`http://localhost:5001/api/users/wishlist/${UserId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.wishlist) {
+          const wishlistSet = new Set(data.wishlist.map((item) => item.ProductId));
+          setWishlist(wishlistSet);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching wishlist:', error);
+      });
+  };
 
   // Handle search input change
   const handleInputChange = (e) => {
@@ -73,6 +94,12 @@ function SearchProducts({ UserId }) {
       return;
     }
 
+    // Check if the product is already in the wishlist
+    if (wishlist.has(ProductId)) {
+      alert('Product is already in the wishlist.');
+      return;
+    }
+
     fetch('http://localhost:5001/api/users/wishlist', {
       method: 'POST',
       headers: {
@@ -83,6 +110,7 @@ function SearchProducts({ UserId }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.message) {
+          setWishlist((prevWishlist) => new Set(prevWishlist.add(ProductId)));
           alert('Item added to wishlist!');
         } else {
           alert('Failed to add item to wishlist.');
@@ -93,6 +121,7 @@ function SearchProducts({ UserId }) {
         alert('An error occurred while adding the item to the wishlist.');
       });
   };
+
   // Handle adding a product to an existing bundle
   const handleAddToBundle = (bundleId) => {
     console.log("Adding product to bundle:", { bundleId, ProductId: selectedProductId });
@@ -173,16 +202,16 @@ function SearchProducts({ UserId }) {
     }
 
     fetch(`http://localhost:5001/api/fetch/${storedUserId}/bundles`)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Fetched Bundles:", data); // Debugging
-      setBundles(data); // Store the fetched bundles
-      setShowBundles(true); // Show the bundles panel
-    })
-    .catch((error) => {
-      console.error("Error fetching bundles:", error);
-      alert("Failed to fetch bundles.");
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched Bundles:", data); // Debugging
+        setBundles(data); // Store the fetched bundles
+        setShowBundles(true); // Show the bundles panel
+      })
+      .catch((error) => {
+        console.error("Error fetching bundles:", error);
+        alert("Failed to fetch bundles.");
+      });
   };
 
   return (
@@ -297,8 +326,13 @@ function SearchProducts({ UserId }) {
                     onClick={() => handleAddToWishlist(product.ProductId)}
                     className="wishlist-button"
                   >
-                    Add to Wishlist
+                    {wishlist.has(product.ProductId)
+                      ? <span role="img" aria-label="added to wishlist">❤️</span>  // Red heart if already in wishlist
+                      : 'Add to Wishlist'}
                   </button>
+                  <Link to={`/product/${product.ProductId}`} className="detail-button">
+                    View Details
+                  </Link>
                   <button
                     onClick={() => handleShowBundles(product.ProductId)}
                     className="bundle-button"
@@ -314,6 +348,7 @@ function SearchProducts({ UserId }) {
                   <Link to={`/product/${product.ProductId}`} className="detail-button">
                     View Details
                   </Link>
+
                 </li>
               ))
             ) : (
@@ -322,34 +357,34 @@ function SearchProducts({ UserId }) {
           </ul>
         </div>
       )}
-    {showBundles && (
-    <div className="bundles-panel">
-      <h3>Your Bundles</h3>
-      <ul>
-        {bundles.length > 0 ? (
-          bundles.map((bundle) => (
-            <li key={bundle.BundledId} className="bundle-item">
-              <span>{bundle.BundleName}</span>
-              <button
-                onClick={() => handleAddToBundle(bundle.BundledId)}
-                className="add-to-bundle-button"
-              >
-                Add to Bundle
-              </button>
-            </li>
-          ))
-        ) : (
-          <p>No bundles available.</p>
-        )}
-      </ul>
-      <button
-        onClick={() => setShowBundles(false)}
-        className="close-panel-button"
-      >
-        Close
-      </button>
-    </div>
-    )}
+      {showBundles && (
+        <div className="bundles-panel">
+          <h3>Your Bundles</h3>
+          <ul>
+            {bundles.length > 0 ? (
+              bundles.map((bundle) => (
+                <li key={bundle.BundledId} className="bundle-item">
+                  <span>{bundle.BundleName}</span>
+                  <button
+                    onClick={() => handleAddToBundle(bundle.BundledId)}
+                    className="add-to-bundle-button"
+                  >
+                    Add to Bundle
+                  </button>
+                </li>
+              ))
+            ) : (
+              <p>No bundles available.</p>
+            )}
+          </ul>
+          <button
+            onClick={() => setShowBundles(false)}
+            className="close-panel-button"
+          >
+            Close
+          </button>
+        </div>
+      )}
     </div>
   );
 }
