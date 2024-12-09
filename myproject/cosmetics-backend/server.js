@@ -11,7 +11,7 @@ const app = express();
 
 const youtube = google.youtube({
   version: 'v3',
-  auth: '', // Add your YouTube API key here
+  auth: '', // Add YouTube API key here
 });
 
 app.use(cors());
