@@ -1,2 +1,3 @@
-# Team081-QueryMasters
-test
+# GLowGuide
+The Beauty & Cosmetics Products Recommendation Platform, GlowGuide, is an innovative web application designed to provide personalized beauty and cosmetics product recommendations. Using datasets from platforms like Amazon and Sephora, the system gathers detailed information on product names, brands, categories, user reviews, ratings, and prices. The platform offers users recommendations based on their specific preferences, needs, and budget, improving their shopping experience. Users can explore product lists, view relevant video previews, and create personalized wishlists, all while discovering trending items and interacting with product reviews. A key feature is enabling users to create personalized 'bundles' of cosmetics, where they can group complementary products (e.g., "this works great with this") and share these curated bundles with others. Users can comment, clone/edit, and rate these bundles, encouraging collaboration and discovery within the beauty community. 
+
